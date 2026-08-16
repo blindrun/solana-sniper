@@ -1,0 +1,49 @@
+[Unit]
+Description=Solana Micro Cap Sniper Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sniper
+Group=sniper
+WorkingDirectory=/opt/solana-sniper
+
+# Deliberately NO EnvironmentFile= here.
+#
+# systemd only treats '#' as a comment at the START of a line, so every inline
+# comment in .env ends up inside the value: LOG_LEVEL became
+# "INFO   # DEBUG | INFO | WARN | ERROR" and the bot crash-looped on startup
+# (2026-08-15, the first time this unit was ever actually exercised).
+#
+# dotenv 16.x, imported by dist/bot.js, parses .env correctly and strips inline
+# comments. It also refuses to override a variable systemd has already set, so
+# it cannot repair the damage after the fact -- systemd must not set them at
+# all. WorkingDirectory above is what lets dotenv resolve ./.env.
+#
+# Do not re-add EnvironmentFile without first stripping every inline comment
+# from .env.
+
+# deploy.sh rewrites this line with the real nvm node path it installed, so the
+# version below is only a placeholder and does not need to match your system.
+ExecStart=/home/sniper/.nvm/versions/node/<NODE_VERSION>/bin/node dist/bot.js
+Restart=on-failure
+RestartSec=15
+StandardOutput=append:/opt/solana-sniper/logs/systemd.log
+StandardError=append:/opt/solana-sniper/logs/systemd.log
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+ReadWritePaths=/opt/solana-sniper/logs /opt/solana-sniper/data
+
+[Install]
+WantedBy=multi-user.target

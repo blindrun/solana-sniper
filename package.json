@@ -1,0 +1,32 @@
+{
+  "name": "solana-sniper",
+  "version": "0.1.0",
+  "description": "Second-wave Solana micro-cap token screener and auto-trader",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/bot.js",
+    "dev": "tsx watch src/bot.ts",
+    "status": "node dist/cli/status.js",
+    "sell-all": "node dist/cli/sell_all.js",
+    "keygen": "node dist/cli/keygen.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.3",
+    "bs58": "^6.0.0",
+    "dotenv": "^16.4.5",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/ws": "^8.5.12",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "license": "MIT",
+  "private": true
+}
